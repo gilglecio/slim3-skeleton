@@ -1,3 +1,5 @@
 vendor/
 log/*
 cache/*
+public/assets/components
+*.local
