@@ -1,46 +1,66 @@
 <?php
-// DIC configuration
 
+use Slim\Views\TwigExtension;
+use Slim\Flash\Messages;
+use Slim\Views\Twig;
+
+use Twig_Extension_Debug;
+use App\Mail\Mailer;
+
+use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
+use Monolog\Handler\StreamHandler;
+
+/**
+ * @var \Slim\Container
+ */
 $container = $app->getContainer();
-
-// -----------------------------------------------------------------------------
-// Service providers
-// -----------------------------------------------------------------------------
 
 // Twig
 $container['view'] = function ($c) {
+    
     $settings = $c->get('settings');
-    $view = new \Slim\Views\Twig($settings['view']['template_path'], $settings['view']['twig']);
+
+    $view = new Twig($settings['view']['template_path'], $settings['view']['twig']);
 
     // Add extensions
-    $view->addExtension(new Slim\Views\TwigExtension($c->get('router'), $c->get('request')->getUri()));
+    $view->addExtension(new TwigExtension($c->get('router'), $c->get('request')->getUri()));
     $view->addExtension(new Twig_Extension_Debug());
 
     return $view;
 };
 
-// Flash messages
+// Flash Messages
 $container['flash'] = function ($c) {
-    return new \Slim\Flash\Messages;
+    return new Messages;
 };
 
-// -----------------------------------------------------------------------------
-// Service factories
-// -----------------------------------------------------------------------------
+// PHPMailer
+$container['mailer'] = function ($c) {
+    $mailer = new PHPMailer;
 
-// monolog
-$container['logger'] = function ($c) {
     $settings = $c->get('settings');
-    $logger = new \Monolog\Logger($settings['logger']['name']);
-    $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
-    $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['logger']['path'], \Monolog\Logger::DEBUG));
+
+    $mailer->Host       = $settings['mailer']->host;
+    $mailer->Username   = $settings['mailer']->username;
+    $mailer->Password   = $settings['mailer']->password;
+    $mailer->Port       = $settings['mailer']->port;
+    $mailer->SMTPSecure = $settings['mailer']->secure;
+
+    $mailer->SMTPAuth = true;
+    $mailer->isHTML(true);
+    $mailer->IsSMTP(true);
+
+    return new Mailer($c->view, $mailer);
+};
+
+// Monolog
+$container['logger'] = function ($c) {
+    
+    $settings = $c->get('settings');
+    
+    $logger = new Logger($settings['logger']['name']);
+    $logger->pushProcessor(new UidProcessor());
+    $logger->pushHandler(new StreamHandler($settings['logger']['path'], Logger::DEBUG));
     return $logger;
 };
-
-// -----------------------------------------------------------------------------
-// Controller factories
-// -----------------------------------------------------------------------------
-
-// $container[App\Controller\HomeController::class] = function ($c) {
-//     return new App\Controller\HomeController($c);
-// };

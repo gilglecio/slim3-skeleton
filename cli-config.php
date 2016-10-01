@@ -2,22 +2,26 @@
 
 require_once 'vendor/autoload.php';
 
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
+
 /**
  * Database params
  */
 $db = require 'app/env.php';
-$db = $db->database;
+$db = $db['db'];
 
 /**
- * @var Doctrine\ORM\Tools\Setup
+ * @var Setup
  */
-$config = Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration([__DIR__ . '/app/src/'], $isDevMode = true);
+$config = Setup::createAnnotationMetadataConfiguration([__DIR__ . '/app/src/'], $isDevMode = true);
 
 /**
- * @var Doctrine\ORM\EntityManager
+ * @var EntityManager
  */
-$entityManager = Doctrine\ORM\EntityManager::create([
-	'dbname' => $db->name,
+$entityManager = EntityManager::create([
+    'dbname' => $db->dbname,
     'user' => $db->username,
     'password' => $db->password,
     'host' => $db->host,
@@ -27,4 +31,4 @@ $entityManager = Doctrine\ORM\EntityManager::create([
 $platform = $entityManager->getConnection()->getDatabasePlatform();
 $platform->registerDoctrineTypeMapping('enum', 'string');
 
-return Doctrine\ORM\Tools\Console\ConsoleRunner::createHelperSet($entityManager);
+return ConsoleRunner::createHelperSet($entityManager);

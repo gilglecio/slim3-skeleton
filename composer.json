@@ -3,16 +3,15 @@
     "license": "MIT",
     "type": "project",
     "keywords": ["slim-framework", "skeleton", "mvc"],
-    "authors": [
-        {
-            "name": "Gilglécio Santos",
-            "email": "gilglecio_765@hotmail.com",
-            "homepage": "http://gilglecio.com.br"
-        }        
-    ],
+    "authors": [{
+        "name": "Gilglécio Santos",
+        "email": "gilglecio_765@hotmail.com",
+        "homepage": "http://gilglecio.com.br"
+    }],
     "autoload": {
         "psr-4": {
-            "App\\Controller\\": "app/src/Controllers"
+            "App\\Controller\\": "app/src/Controllers",
+            "App\\Mail\\": "app/src/Mail"
         }
     },
     "require": {
@@ -20,10 +19,16 @@
         "slim/twig-view": "^2.0",
         "slim/flash": "^0.1.0",
         "monolog/monolog": "^1.17",
-        "php-activerecord/php-activerecord": "^1.1"
+        "php-activerecord/php-activerecord": "^1.1",
+        "phpmailer/phpmailer": "^5.2"
     },
     "require-dev": {
         "doctrine/orm": "^2.5",
-        "doctrine/migrations": "^1.4"
+        "doctrine/migrations": "^1.4",
+        "behat/behat": "2.4.*@stable",
+        "behat/mink": "1.5.*@stable",
+        "behat/mink-goutte-driver": "*",
+        "behat/mink-extension": "*",
+        "behat/mink-selenium2-driver": "*"
     }
 }

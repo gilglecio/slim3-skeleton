@@ -11,32 +11,45 @@ if (PHP_SAPI == 'cli-server') {
     }
 }
 
+define('APP_URL', 'http://' . $_SERVER['HTTP_HOST']);
+
 session_start();
 
-require __DIR__ . '/vendor/autoload.php';
+$composer = __DIR__ . '/vendor/autoload.php';
+
+if (! file_exists($composer)) {
+    die('Run composer install');
+}
+
+require $composer;
+
+use Slim\App;
+use ActiveRecord\Config;
 
 $settings = require __DIR__ . '/app/settings.php';
 $env = require __DIR__ . '/app/env.php';
 
-$env->models = $settings['settings']['models_path'];
+$settings['settings'] = array_merge($settings['settings'], (array) $env);
 
-ActiveRecord\Config::initialize(function($cfg) use ($env) {
-
-	$cfg->set_model_directory($env->models);
-	$cfg->set_connections([
-		// 'development' => 'mysql://username:password@localhost/database_name'
-		'development' => sprintf(
-			'%s://%s:%s@%s/%s',
-			$env->database->driver,
-			$env->database->username,
-			$env->database->password,
-			$env->database->host,
-			$env->database->dbname
-		)
-	]);
+Config::initialize(function ($cfg) use ($settings) {
+    
+    $db = $settings['settings']['db'];
+    
+    $cfg->set_model_directory($settings['settings']['models_path']);
+    $cfg->set_connections([
+        // 'development' => 'mysql://username:password@localhost/database_name'
+        'development' => sprintf(
+            '%s://%s:%s@%s/%s?charset=utf8',
+            $db->driver,
+            $db->username,
+            $db->password,
+            $db->host,
+            $db->dbname
+        )
+    ]);
 });
 
-$app = new \Slim\App($settings);
+$app = new App($settings);
 
 // Set up dependencies
 require __DIR__ . '/app/dependencies.php';

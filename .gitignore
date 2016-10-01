@@ -1,5 +1,8 @@
 vendor/
 log/*
 cache/*
-public/assets/components
 *.local
+*.bak
+/scripts
+/public/behat.html
+/public/assets

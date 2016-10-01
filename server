@@ -2,7 +2,7 @@
 
 rm log/app.log
 
-PORT='3000'
+PORT=3000
 
-xdg-open http://localhost:$PORT/
-php -S localhost:$PORT -t public
+# xdg-open http://localhost:$PORT/
+php -S localhost:$PORT -t public .htrouter.php
