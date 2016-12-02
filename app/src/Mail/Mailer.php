@@ -4,10 +4,20 @@ namespace App\Mail;
 
 class Mailer
 {
+    /**
+     * @var \Slim\Views\Twig
+     */
     protected $view;
     
+    /**
+     * @var \PHPMailer
+     */
     protected $mailer;
     
+    /**
+     * @param \Slim\Views\Twig $view
+     * @param \PHPMailer       $mailer
+     */
     public function __construct($view, $mailer)
     {
         $this->view = $view;

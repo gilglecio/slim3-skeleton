@@ -1,19 +1,34 @@
 <?php
 
+/**
+ * @package Controller
+ * @subpackage App
+ */
 namespace App\Controller;
 
 use Slim\Container;
 
 class Controller
 {
+    /**
+     * @var \Slim\Views\Twig
+     */
     protected $view;
+
+    /**
+     * @var \Monolog\Logger
+     */
     protected $logger;
+
+    /**
+     * @var \Slim\Flash\Messages
+     */
     protected $flash;
 
-    public function __construct(Container $c)
+    public function __construct(Container $container)
     {
-        $this->view = $c->get('view');
-        $this->logger = $c->get('logger');
-        $this->flash = $c->get('flash');
+        $this->view = $container->get('view');
+        $this->logger = $container->get('logger');
+        $this->flash = $container->get('flash');
     }
 }
