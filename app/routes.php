@@ -1,5 +1,3 @@
 <?php
-// Routes
 
-$app->get('/', App\Action\HomeAction::class)
-    ->setName('homepage');
+$app->get('/', 'App\Controller\HomeController:index')->setName('home');
